@@ -98,6 +98,7 @@ if selected_option == "Sales Overview":
     st.bar_chart(market_sales, color='#357b72')
 
     # Create the scatter plot with customized background color
+    st.subheader("Relationship between Sales and Discount")
     plt.figure(figsize=(8,6), facecolor='#E8E8E8')
     sns.set_style("white")  # Remove grid lines
     plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
@@ -138,6 +139,7 @@ elif selected_option == "Profit Analysis":
     st.bar_chart(market_profit, color='#357b72')
 
     # Create the scatter plot with customized background color
+    st.subheader("Relationship between Profit and Discount")
     plt.figure(figsize=(8,6), facecolor='#E8E8E8')
     sns.set_style("white")  # Remove grid lines
     plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
