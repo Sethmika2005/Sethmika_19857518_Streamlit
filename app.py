@@ -37,8 +37,9 @@ with st.sidebar:
  
     # Filter by date range
     st.sidebar.subheader("Date Range Filter")
-    start_date = st.sidebar.date_input("Start Date", pd.to_datetime(df["Order Date"]).min())
-    end_date = st.sidebar.date_input("End Date", pd.to_datetime(df["Order Date"]).max(), max_value=pd.to_datetime(df["Order Date"]).max())
+    start_date = st.sidebar.date_input("Start Date", pd.to_datetime(df["Order Date"]).min(), min_value=pd.to_datetime(df["Order Date"]).min(), max_value=pd.to_datetime(df["Order Date"]).max())
+    end_date = st.sidebar.date_input("End Date", pd.to_datetime(df["Order Date"]).max(), min_value=pd.to_datetime(df["Order Date"]).min(), max_value=pd.to_datetime(df["Order Date"]).max())
+
 
     # Filter by Region
     st.sidebar.subheader("Region Filter")
