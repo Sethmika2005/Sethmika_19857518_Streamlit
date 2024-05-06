@@ -4,6 +4,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import plotly.express as px
+import numpy as np
 
 # Load the dataset
 df = pd.read_excel("Superstore.xlsx")
@@ -28,7 +29,7 @@ with col2:
 
 with col3:
     st.metric("Total Profit", total_profit)
-    
+
 # Create a sidebar with tiles
 with st.sidebar:
     st.sidebar.header("Anlysis Focus")
@@ -157,8 +158,7 @@ elif selected_option == "Product Insights":
         (df["Region"] if selected_region == "All" else df["Region"] == selected_region) &
         (df["Country"] if selected_country == "All" else df["Country"] == selected_country) &
         (df["State"] if selected_state == "All" else df["State"] == selected_state) &
-        (df["Sub-Category"] if selected_sub_category == "All" else df["Sub-Category"] == selected_sub_category)
-    ]
+        (df["Sub-Category"] if selected_sub_category == "All" else df["Sub-Category"] == selected_sub_category)]
 
     # Calculate highest sales, highest profit, top 10 purchased products, and least 10 purchased products
     highest_sales_products = filtered_products.groupby("Product Name")["Sales"].sum().nlargest(10)
@@ -183,4 +183,27 @@ elif selected_option == "Product Insights":
     least_10_purchased_chart = px.bar(least_10_purchased_products, x=least_10_purchased_products.index, y=least_10_purchased_products.values, color=least_10_purchased_products.index, color_discrete_sequence=color_palette_4)
     st.plotly_chart(least_10_purchased_chart, use_container_width=True)
 
+    #Market Basket Analysis obtained from the previous assessment
+    # Convert 'Sub-Category' column into dummies
+    transaction_df = pd.get_dummies(filtered_products['Sub-Category'])
+    # Concatenate 'Order ID' column to transaction_df
+    transaction_df = pd.concat([filtered_products['Order ID'], transaction_df], axis=1)
+    # Group by 'Order ID' and aggregate to sum up the occurrence of each sub-category within each order
+    transaction_df = transaction_df.groupby('Order ID').sum()
+    # Convert all columns to binary values (1 if > 0, else 0)
+    transaction_df = transaction_df.applymap(lambda x: 1 if x > 0 else 0)
+    # Compute the co-occurrence matrix
+    co_occurrence_matrix = transaction_df.T.dot(transaction_df)
+    # Set diagonal elements to 0
+    np.fill_diagonal(co_occurrence_matrix.values, 0)
 
+    #Heatmap of Sub-categories
+    st.subheader("Co-occurrence Matrix of Sub-Categories")
+    # Plot the heatmap
+    plt.figure(figsize=(10, 8), facecolor='#E8E8E8')
+    sns.heatmap(co_occurrence_matrix, annot=True, cmap="YlGn", fmt="d", linewidths=2, color='#357b72')
+    plt.title('Co-occurrence Matrix of Sub-Categories (Excluding Same Product Combinations)')
+    plt.xlabel('Sub-Category')
+    plt.ylabel('Sub-Category')
+    # Show heatmap in Streamlit
+    st.pyplot(plt)
