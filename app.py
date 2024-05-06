@@ -99,9 +99,9 @@ if selected_option == "Sales Analysis":
 
     # Create the scatter plot with customized background color
     st.subheader("Relationship between Sales and Discount")
-    plt.figure(figsize=(8,5), facecolor='#E8E8E8')
+    plt.figure(figsize=(8,5), facecolor='#FFFFFF')
     sns.set_style("white")  # Remove grid lines
-    plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
+    plt.rcParams['axes.facecolor'] = '#FFFFFF'  # Set background color
     sns.scatterplot(data=filtered_sales, x="Discount", y="Sales", color='#357b72')
     # Display the plot
     st.pyplot(plt)
@@ -159,9 +159,9 @@ elif selected_option == "Profit Analysis":
 
     # Create the scatter plot with customized background color
     st.subheader("Relationship between Profit and Discount")
-    plt.figure(figsize=(8,5), facecolor='#E8E8E8')
+    plt.figure(figsize=(8,5), facecolor='#FFFFFF')
     sns.set_style("white")  # Remove grid lines
-    plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
+    plt.rcParams['axes.facecolor'] = '#FFFFFF'  # Set background color
     sns.scatterplot(data=filtered_profit, x="Discount", y="Profit", color='#357b72')
     # Display the plot
     st.pyplot(plt)
@@ -245,7 +245,7 @@ elif selected_option == "Product Insights":
     #Heatmap of Sub-categories
     st.subheader("Co-occurrence Matrix of Sub-Categories")
     # Plot the heatmap
-    plt.figure(figsize=(10, 8), facecolor='#E8E8E8')
+    plt.figure(figsize=(10, 8), facecolor='#FFFFFF')
     sns.heatmap(co_occurrence_matrix, annot=True, cmap="YlGn", fmt="d", linewidths=2, color='#357b72')
     plt.title('Co-occurrence Matrix of Sub-Categories (Excluding Same Product Combinations)')
     plt.xlabel('Sub-Category')
