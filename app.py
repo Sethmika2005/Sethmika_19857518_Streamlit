@@ -11,6 +11,24 @@ df = pd.read_excel("Superstore.xlsx")
 # Set Streamlit app title
 st.title("Minger Dashboard")
 
+# Create columns for layout
+col1, col2, col3 = st.columns(3)
+
+# Calculate KPIs and round to the nearest whole number as per the format
+total_sales = "${:,.0f}".format(round(df["Sales"].sum()))
+total_quantity = "{:,.0f} units".format(round(df["Quantity"].sum()))  # Appending 'units' to total quantity
+total_profit = "${:,.0f}".format(round(df["Profit"].sum()))
+
+# Display KPIs in separate columns
+with col1:
+    st.metric("Total Sales", total_sales)
+
+with col2:
+    st.metric("Total Quantity", total_quantity)
+
+with col3:
+    st.metric("Total Profit", total_profit)
+    
 # Create a sidebar with tiles
 with st.sidebar:
     st.sidebar.header("Anlysis Focus")
