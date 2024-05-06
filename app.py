@@ -14,7 +14,7 @@ st.title("Minger Dashboard")
 
 # Create a sidebar with tiles
 with st.sidebar:
-    st.sidebar.header("Anlysis Focus")
+    st.sidebar.header("Analysis Focus")
     selected_option = st.radio("Select an option:", ["Sales Analysis", "Profit Analysis", "Product Insights"])
  
     # Filter by date range
@@ -99,7 +99,7 @@ if selected_option == "Sales Analysis":
 
     # Create the scatter plot with customized background color
     st.subheader("Relationship between Sales and Discount")
-    plt.figure(figsize=(8,6), facecolor='#E8E8E8')
+    plt.figure(figsize=(8,5), facecolor='#E8E8E8')
     sns.set_style("white")  # Remove grid lines
     plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
     sns.scatterplot(data=filtered_sales, x="Discount", y="Sales", color='#357b72')
@@ -159,7 +159,7 @@ elif selected_option == "Profit Analysis":
 
     # Create the scatter plot with customized background color
     st.subheader("Relationship between Profit and Discount")
-    plt.figure(figsize=(8,6), facecolor='#E8E8E8')
+    plt.figure(figsize=(8,5), facecolor='#E8E8E8')
     sns.set_style("white")  # Remove grid lines
     plt.rcParams['axes.facecolor'] = '#E8E8E8'  # Set background color
     sns.scatterplot(data=filtered_profit, x="Discount", y="Profit", color='#357b72')
