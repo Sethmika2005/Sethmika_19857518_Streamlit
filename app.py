@@ -15,7 +15,7 @@ st.title("Minger Dashboard")
 # Create a sidebar with tiles
 with st.sidebar:
     st.sidebar.header("Anlysis Focus")
-    selected_option = st.radio("Select an option:", ["Sales Overview", "Profit Analysis", "Product Insights"])
+    selected_option = st.radio("Select an option:", ["Sales Analysis", "Profit Analysis", "Product Insights"])
  
     # Filter by date range
     st.sidebar.subheader("Date Range Filter")
@@ -49,8 +49,8 @@ end_date = pd.to_datetime(end_date)
 colour_palette=['#357b72', '#6b9b8e', '#99bcb5', '#c8dedb']
 
 # Filter options
-if selected_option == "Sales Overview":
-    st.header("Sales Overview")
+if selected_option == "Sales Analysis":
+    st.header("Sales Analysis")
     # Convert start_date and end_date to Pandas Timestamp objects
     filtered_sales = df[
         (df["Order Date"] >= start_date) & (df["Order Date"] <= end_date) &
