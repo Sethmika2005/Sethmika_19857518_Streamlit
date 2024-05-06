@@ -13,24 +13,53 @@ st.title("Minger Dashboard")
 
 # Create a sidebar with tiles
 with st.sidebar:
+    st.sidebar.header("Anlysis Focus")
     selected_option = st.radio("Select an option:", ["Sales Overview", "Profit Analysis", "Product Insights"])
+ 
+    # Filter by date range
+    st.sidebar.subheader("Date Range Filter")
+    start_date = st.sidebar.date_input("Start Date", pd.to_datetime(df["Order Date"]).min())
+    end_date = st.sidebar.date_input("End Date", pd.to_datetime(df["Order Date"]).max(), max_value=pd.to_datetime(df["Order Date"]).max())
+
+    # Filter by Region
+    st.sidebar.subheader("Region Filter")
+    all_regions = ["All"] + list(df["Region"].unique())
+    selected_region = st.sidebar.selectbox("Select Region", all_regions)
+    
+    # Filter by Country
+    st.sidebar.subheader("Country Filter")
+    all_countries = ["All"] + list(df["Country"].unique())
+    selected_country = st.sidebar.selectbox("Select Country", all_countries)
+    
+    # Filter by State
+    st.sidebar.subheader("State Filter")
+    all_states = ["All"] + list(df["State"].unique())
+    selected_state = st.sidebar.selectbox("Select State", all_states)
+    
+    # Filter by Sub-Category
+    st.sidebar.subheader("Sub-Category Filter")
+    all_sub_categories = ["All"] + list(df["Sub-Category"].unique())
+    selected_sub_category = st.sidebar.selectbox("Select Sub-Category", all_sub_categories)
+
+start_date = pd.to_datetime(start_date)
+end_date = pd.to_datetime(end_date)
 
 #Colour palete
 colour_palete=['#357b72', '#6b9b8e', '#99bcb5', '#c8dedb']
 
 # Filter options
 if selected_option == "Sales Overview":
-    st.sidebar.subheader("Filter by Date")
-    start_date = st.sidebar.date_input("Start Date", min(df["Order Date"]))
-    end_date = st.sidebar.date_input("End Date", max(df["Order Date"]))
+    # Convert start_date and end_date to Pandas Timestamp objects
+    filtered_sales = df[
+        (df["Order Date"] >= start_date) & (df["Order Date"] <= end_date) &
+        (df["Region"] if selected_region == "All" else df["Region"] == selected_region) &
+        (df["Country"] if selected_country == "All" else df["Country"] == selected_country) &
+        (df["State"] if selected_state == "All" else df["State"] == selected_state) &
+        (df["Sub-Category"] if selected_sub_category == "All" else df["Sub-Category"] == selected_sub_category)]
 
-    # Convert start_date and end_date to datetime64[ns]
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-
-    st.subheader("Monthly Sales Trend")
-    filtered_sales = df[(df["Order Date"] >= start_date) & (df["Order Date"] <= end_date)]
-    st.line_chart(filtered_sales.set_index("Order Date")["Sales"])
+    #Sales Trend
+    st.subheader("Sales Trend Over Time")
+    st.line_chart(filtered_sales.set_index("Order Date")["Sales"], color='#357b72')
 
     col1, col2 = st.columns(2)
     with col1:
@@ -57,17 +86,16 @@ if selected_option == "Sales Overview":
     st.pyplot(plt)
 
 elif selected_option == "Profit Analysis":
-    st.sidebar.subheader("Filter by Date")
-    start_date = st.sidebar.date_input("Start Date", min(df["Order Date"]))
-    end_date = st.sidebar.date_input("End Date", max(df["Order Date"]))
+    filtered_profit = df[
+        (df["Order Date"] >= start_date) & (df["Order Date"] <= end_date) &
+        (df["Region"] if selected_region == "All" else df["Region"] == selected_region) &
+        (df["Country"] if selected_country == "All" else df["Country"] == selected_country) &
+        (df["State"] if selected_state == "All" else df["State"] == selected_state) &
+        (df["Sub-Category"] if selected_sub_category == "All" else df["Sub-Category"] == selected_sub_category)]
 
-    # Convert start_date and end_date to datetime64[ns]
-    start_date = pd.to_datetime(start_date)
-    end_date = pd.to_datetime(end_date)
-
+    #Profit Trend
     st.subheader("Profit Trend over Time")
-    filtered_profit = df[(df["Order Date"] >= start_date) & (df["Order Date"] <= end_date)]
-    st.line_chart(filtered_profit.set_index("Order Date")["Profit"])
+    st.line_chart(filtered_profit.set_index("Order Date")["Profit"], color='#357b72')
 
     # Sum of Sales by Segment and by Category
     # Create columns for layout
@@ -105,12 +133,20 @@ elif selected_option == "Product Insights":
     color_palette_3 = ['#00425A', '#1F8A70', '#2E9E7E', '#3FB28E', '#4FBDA0', '#5FC8B2', '#6FD3C4', '#7FDAE6', '#8FE5F8', '#9FF0FF']
     color_palette_4 = ['#7AA874', '#88B78D', '#98D8AA', '#A9E9B7', '#C3EDC0','#E9FFC2', '#F3E99F', '#F7DB6A', '#EBB02D', '#D864A9']
     
+    # Apply filters
+    filtered_products = df[
+        (df["Order Date"] >= start_date) & (df["Order Date"] <= end_date) &
+        (df["Region"] if selected_region == "All" else df["Region"] == selected_region) &
+        (df["Country"] if selected_country == "All" else df["Country"] == selected_country) &
+        (df["State"] if selected_state == "All" else df["State"] == selected_state) &
+        (df["Sub-Category"] if selected_sub_category == "All" else df["Sub-Category"] == selected_sub_category)
+    ]
 
     # Calculate highest sales, highest profit, top 10 purchased products, and least 10 purchased products
-    highest_sales_products = df.groupby("Product Name")["Sales"].sum().nlargest(10)
-    highest_profit_products = df.groupby("Product Name")["Profit"].sum().nlargest(10)
-    top_10_purchased_products = df["Product Name"].value_counts().nlargest(10)
-    least_10_purchased_products = df["Product Name"].value_counts().nsmallest(10)
+    highest_sales_products = filtered_products.groupby("Product Name")["Sales"].sum().nlargest(10)
+    highest_profit_products = filtered_products.groupby("Product Name")["Profit"].sum().nlargest(10)
+    top_10_purchased_products = filtered_products["Product Name"].value_counts().nlargest(10)
+    least_10_purchased_products = filtered_products["Product Name"].value_counts().nsmallest(10)
 
     # Create bar charts for each metric
     st.subheader("Products with Highest Sales")
@@ -128,3 +164,5 @@ elif selected_option == "Product Insights":
     st.subheader("Least 10 Purchased Products")
     least_10_purchased_chart = px.bar(least_10_purchased_products, x=least_10_purchased_products.index, y=least_10_purchased_products.values, color=least_10_purchased_products.index, color_discrete_sequence=color_palette_4)
     st.plotly_chart(least_10_purchased_chart, use_container_width=True)
+
+
